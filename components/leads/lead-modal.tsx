@@ -10,7 +10,6 @@ import {
   leadCourseList,
   leadSourceList,
   leadStatusEnum,
-  leadCounselorList,
 } from "@/lib/validations/lead";
 import { Button } from "@/components/ui/button";
 import { X, Loader2 } from "lucide-react";
@@ -47,7 +46,7 @@ export function LeadModal({
       interestedCourse: leadCourseList[0],
       leadSource: leadSourceList[0],
       status: "New",
-      assignedCounselor: leadCounselorList[0],
+      assignedCounselor: "",
       followUpDate: new Date().toISOString().split("T")[0],
       notes: "",
     },
@@ -74,7 +73,7 @@ export function LeadModal({
         interestedCourse: leadCourseList[0],
         leadSource: leadSourceList[0],
         status: "New",
-        assignedCounselor: leadCounselorList[0],
+        assignedCounselor: "",
         followUpDate: new Date().toISOString().split("T")[0],
         notes: "",
       });
@@ -263,16 +262,12 @@ export function LeadModal({
               <label className="block text-xs font-semibold text-[#11232B] mb-1">
                 Assigned Staff <span className="text-red-500">*</span>
               </label>
-              <select
+              <input
+                type="text"
+                placeholder="e.g. Mithun K"
                 {...register("assignedCounselor")}
-                className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white cursor-pointer"
-              >
-                {leadCounselorList.map((staff) => (
-                  <option key={staff} value={staff}>
-                    {staff}
-                  </option>
-                ))}
-              </select>
+                className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] placeholder-[#8A9EA5] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white"
+              />
               {errors.assignedCounselor && (
                 <p className="mt-1 text-[11px] text-red-500">{errors.assignedCounselor.message}</p>
               )}

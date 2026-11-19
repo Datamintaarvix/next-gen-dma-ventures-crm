@@ -61,7 +61,7 @@ export const leadSchema = z.object({
   interestedCourse: z.string().min(1, { message: "Please select an interested course" }),
   leadSource: z.string().min(1, { message: "Please select an enquiry source" }),
   status: leadStatusEnum,
-  assignedCounselor: z.string().min(1, { message: "Please select an assigned staff member" }),
+  assignedCounselor: z.string().min(1, { message: "Please enter assigned staff name" }),
   followUpDate: z.string().min(1, { message: "Please select a follow-up date" }),
   notes: z.string().optional(),
 });
