@@ -16,6 +16,11 @@ import {
   applicationStatusEnum,
   offerStatusEnum,
 } from "@/lib/validations/placement";
+import {
+  COURSE_CATEGORIES,
+  COURSE_CATALOGUE_BY_CATEGORY,
+  ALL_COURSES,
+} from "@/lib/courses";
 import { PlacementKPIs } from "@/components/placements/placement-kpis";
 import { CompanyModal } from "@/components/placements/company-modal";
 import { JobOpportunityModal } from "@/components/placements/job-opportunity-modal";
@@ -83,7 +88,7 @@ export default function PlacementsPage() {
   const [profiles, setProfiles] = useState<StudentPlacementProfile[]>([]);
   const [applications, setApplications] = useState<PlacementApplicationRecord[]>([]);
   const [offers, setOffers] = useState<PlacementOfferRecord[]>([]);
-  const [courses, setCourses] = useState<string[]>([]);
+  const [courses, setCourses] = useState<string[]>([...ALL_COURSES]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);

@@ -1,16 +1,10 @@
 import { z } from "zod";
+import { COURSE_CATEGORIES } from "@/lib/courses";
 
 export const courseStatusEnum = ["Active", "Inactive", "Draft", "Archived"] as const;
 export type CourseStatus = (typeof courseStatusEnum)[number];
 
-export const courseCategoryList = [
-  "Digital Marketing",
-  "Data Science & Analytics",
-  "UI/UX & Product Design",
-  "Software Development",
-  "AI & Machine Learning",
-  "Cloud & Cybersecurity",
-] as const;
+export const courseCategoryList = COURSE_CATEGORIES;
 
 export const courseLevelEnum = ["Beginner", "Intermediate", "Advanced", "All Levels"] as const;
 export type CourseLevel = (typeof courseLevelEnum)[number];

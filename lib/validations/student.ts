@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ALL_COURSES } from "@/lib/courses";
 
 export const studentStatusEnum = ["Active", "Inactive", "Completed", "Dropped"] as const;
 export type StudentStatus = (typeof studentStatusEnum)[number];
@@ -6,14 +7,7 @@ export type StudentStatus = (typeof studentStatusEnum)[number];
 export const studentGenderEnum = ["Male", "Female", "Other"] as const;
 export type StudentGender = (typeof studentGenderEnum)[number];
 
-export const studentCourseList = [
-  "Digital Marketing",
-  "Data Analytics",
-  "UI/UX Design",
-  "Full-stack Development",
-  "AI & Machine Learning",
-  "Cloud Computing & DevOps",
-] as const;
+export const studentCourseList = ALL_COURSES;
 
 export interface BatchInfo {
   code: string;

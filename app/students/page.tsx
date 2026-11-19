@@ -4,10 +4,10 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   StudentRecord,
   StudentStatus,
-  studentCourseList,
   studentBatchList,
   studentStatusEnum,
 } from "@/lib/validations/student";
+import { COURSE_CATEGORIES, COURSE_CATALOGUE_BY_CATEGORY } from "@/lib/courses";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { StudentKPIs } from "@/components/students/student-kpis";
@@ -377,9 +377,13 @@ export default function StudentsPage() {
                   }}
                   className="h-9 px-2.5 pr-7 rounded-lg bg-white border border-[#D5E2E0] text-xs text-[#11232B] appearance-none focus:outline-none focus:border-[#078783] cursor-pointer"
                 >
-                  <option value="All">All Courses</option>
-                  {studentCourseList.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                  <option value="All">All Courses (44)</option>
+                  {COURSE_CATEGORIES.map((cat) => (
+                    <optgroup key={cat} label={`${cat} (${COURSE_CATALOGUE_BY_CATEGORY[cat].length})`}>
+                      {COURSE_CATALOGUE_BY_CATEGORY[cat].map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#7B939B] pointer-events-none" />

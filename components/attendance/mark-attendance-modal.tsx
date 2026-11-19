@@ -7,6 +7,11 @@ import {
   MarkAttendanceSessionFormData,
   SingleStudentAttendance,
 } from "@/lib/validations/attendance";
+import {
+  COURSE_CATEGORIES,
+  COURSE_CATALOGUE_BY_CATEGORY,
+  ALL_COURSES,
+} from "@/lib/courses";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -427,11 +432,20 @@ export function MarkAttendanceModal({
                   className="w-full h-9 px-3 text-xs md:text-sm rounded-lg border border-[#E2ECEB] bg-white text-slate-800 font-medium focus:ring-2 focus:ring-[#078783]/30 focus:outline-none"
                   required
                 >
-                  <option value="">Select Course</option>
-                  {courses.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
+                  <option value="">Select Course ({ALL_COURSES.length} Available)</option>
+                  {selectedCourse && !ALL_COURSES.includes(selectedCourse) && (
+                    <optgroup label="── Current / Legacy Course ──">
+                      <option value={selectedCourse}>{selectedCourse} (Recorded)</option>
+                    </optgroup>
+                  )}
+                  {COURSE_CATEGORIES.map((cat) => (
+                    <optgroup key={cat} label={`── ${cat} (${COURSE_CATALOGUE_BY_CATEGORY[cat].length}) ──`}>
+                      {COURSE_CATALOGUE_BY_CATEGORY[cat].map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </div>

@@ -7,6 +7,7 @@ import {
   admissionStatusEnum,
   paymentStatusEnum,
 } from "@/lib/validations/admission";
+import { COURSE_CATEGORIES, COURSE_CATALOGUE_BY_CATEGORY } from "@/lib/courses";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AdmissionKPIs, AdmissionStats } from "@/components/admissions/admission-kpis";
@@ -416,11 +417,15 @@ export default function AdmissionsPage() {
                 onChange={(e) => setSelectedCourse(e.target.value)}
                 className="appearance-none text-xs bg-[#F8FBFA] border border-[#E2ECEB] rounded-lg px-3 py-2 pr-7 text-[#11232B] focus:outline-none focus:border-[#078783] cursor-pointer"
               >
-                <option value="All">All Courses</option>
-                {courseList.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                <option value="All">All Courses (44)</option>
+                {COURSE_CATEGORIES.map((cat) => (
+                  <optgroup key={cat} label={`${cat} (${COURSE_CATALOGUE_BY_CATEGORY[cat].length})`}>
+                    {COURSE_CATALOGUE_BY_CATEGORY[cat].map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
               <ChevronDown className="w-3.5 h-3.5 text-[#5A7178] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />

@@ -10,6 +10,7 @@ import {
   guardianRelationList,
   studentStatusEnum,
 } from "@/lib/validations/student";
+import { CourseSelect } from "@/components/courses/course-select";
 import { Button } from "@/components/ui/button";
 import { X, Loader2, User, Phone, Mail, MapPin, Calendar, BookOpen, Users, DollarSign } from "lucide-react";
 
@@ -335,15 +336,11 @@ export function StudentModal({
                 <label className="block text-xs font-medium text-[#11232B] mb-1">
                   Selected Course <span className="text-red-500">*</span>
                 </label>
-                <select
+                <CourseSelect
                   value={formData.course}
-                  onChange={(e) => handleCourseChange(e.target.value)}
-                  className="w-full h-9 px-3 rounded-lg border border-[#D5E2E0] text-xs text-[#11232B] focus:outline-none focus:border-[#078783] focus:ring-1 focus:ring-[#078783]"
-                >
-                  {studentCourseList.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
+                  onChange={(val) => handleCourseChange(val)}
+                  placeholder="Select or search course..."
+                />
               </div>
 
               <div>

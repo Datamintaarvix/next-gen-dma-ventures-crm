@@ -10,6 +10,8 @@ import {
 } from "@/lib/validations/batch";
 import { Button } from "@/components/ui/button";
 import { X, Loader2, Layers, Calendar, Clock, UserCheck, Users, MapPin } from "lucide-react";
+import { CourseSelect } from "@/components/courses/course-select";
+import { ALL_COURSES } from "@/lib/courses";
 
 interface BatchModalProps {
   isOpen: boolean;
@@ -177,21 +179,11 @@ export function BatchModal({
               <label className="block text-xs font-medium text-[#11232B] mb-1">
                 Course Curriculum <span className="text-red-500">*</span>
               </label>
-              <select
+              <CourseSelect
                 value={formData.courseName}
-                onChange={(e) => setFormData({ ...formData, courseName: e.target.value })}
-                className="w-full h-9 px-3 rounded-lg border border-[#D5E2E0] text-xs text-[#11232B] focus:outline-none focus:border-[#078783]"
-              >
-                {courseList.length > 0 ? (
-                  courseList.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))
-                ) : (
-                  <option value={formData.courseName}>{formData.courseName}</option>
-                )}
-              </select>
+                onChange={(val) => setFormData({ ...formData, courseName: val })}
+                placeholder="Select or search course curriculum..."
+              />
             </div>
           </div>
 

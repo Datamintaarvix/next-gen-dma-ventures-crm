@@ -13,6 +13,7 @@ import {
   CounsellingSessionRecord,
 } from "@/lib/validations/counselling";
 import { leadCounselorList } from "@/lib/validations/lead";
+import { CourseSelect } from "@/components/courses/course-select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -364,37 +365,25 @@ export function ScheduleCounsellingModal({
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Interested Course <span className="text-rose-500">*</span>
               </label>
-              <select
+              <CourseSelect
                 value={interestedCourse}
-                onChange={(e) => setInterestedCourse(e.target.value)}
-                className="w-full h-9 px-3 text-xs md:text-sm rounded-lg border border-[#E2ECEB] bg-white text-slate-800 font-medium focus:ring-2 focus:ring-[#078783]/30 focus:outline-none"
-                required
-              >
-                <option value="">Select Course</option>
-                {courses.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setInterestedCourse(val)}
+                placeholder="Select or search course..."
+              />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Assigned Counsellor <span className="text-rose-500">*</span>
+                Assigned Staff <span className="text-rose-500">*</span>
               </label>
-              <select
+              <input
+                type="text"
+                placeholder="e.g. Mithun K"
                 value={assignedCounsellor}
                 onChange={(e) => setAssignedCounsellor(e.target.value)}
-                className="w-full h-9 px-3 text-xs md:text-sm rounded-lg border border-[#E2ECEB] bg-white text-slate-800 font-medium focus:ring-2 focus:ring-[#078783]/30 focus:outline-none"
+                className="w-full h-9 px-3 text-xs md:text-sm rounded-lg border border-[#E2ECEB] bg-white text-slate-800 font-medium placeholder-[#8A9EA5] focus:ring-2 focus:ring-[#078783]/30 focus:outline-none"
                 required
-              >
-                {leadCounselorList.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div>

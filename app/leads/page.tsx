@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { LeadRecord, leadCourseList } from "@/lib/validations/lead";
+import { LeadRecord } from "@/lib/validations/lead";
+import { COURSE_CATEGORIES, COURSE_CATALOGUE_BY_CATEGORY } from "@/lib/courses";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DemoNotice } from "@/components/dashboard/demo-notice";
@@ -274,11 +275,15 @@ export default function LeadsPage() {
                 }}
                 className="appearance-none bg-white border border-[#E2ECEB] text-xs font-medium text-[#11232B] rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-1 focus:ring-[#078783] cursor-pointer"
               >
-                <option value="All">All courses</option>
-                {leadCourseList.map((course) => (
-                  <option key={course} value={course}>
-                    {course}
-                  </option>
+                <option value="All">All courses (44)</option>
+                {COURSE_CATEGORIES.map((cat) => (
+                  <optgroup key={cat} label={`${cat} (${COURSE_CATALOGUE_BY_CATEGORY[cat].length})`}>
+                    {COURSE_CATALOGUE_BY_CATEGORY[cat].map((course) => (
+                      <option key={course} value={course}>
+                        {course}
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
               <ChevronDown className="w-3.5 h-3.5 text-[#5A7178] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />

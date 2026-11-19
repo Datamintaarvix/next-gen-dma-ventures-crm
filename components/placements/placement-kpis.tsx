@@ -15,6 +15,11 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { PlacementKPIStats } from "@/lib/validations/placement";
+import {
+  COURSE_CATEGORIES,
+  COURSE_CATALOGUE_BY_CATEGORY,
+  ALL_COURSES,
+} from "@/lib/courses";
 
 interface PlacementKPIsProps {
   stats: PlacementKPIStats;
@@ -156,12 +161,16 @@ export function PlacementKPIs({
                 className="bg-transparent text-white font-medium focus:outline-none cursor-pointer pr-1"
               >
                 <option value="All" className="bg-[#192C34] text-white">
-                  All Courses
+                  All Courses ({ALL_COURSES.length})
                 </option>
-                {courses.map((course) => (
-                  <option key={course} value={course} className="bg-[#192C34] text-white">
-                    {course}
-                  </option>
+                {COURSE_CATEGORIES.map((cat) => (
+                  <optgroup key={cat} label={`── ${cat} (${COURSE_CATALOGUE_BY_CATEGORY[cat].length}) ──`} className="bg-[#192C34] text-[#8A9EA5] font-semibold">
+                    {COURSE_CATALOGUE_BY_CATEGORY[cat].map((course) => (
+                      <option key={course} value={course} className="bg-[#192C34] text-white">
+                        {course}
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             </div>

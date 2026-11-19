@@ -11,6 +11,7 @@ import {
   enquiryStatusEnum,
 } from "@/lib/validations/enquiry";
 import { leadCourseList, leadCounselorList } from "@/lib/validations/lead";
+import { CourseSelect } from "@/components/courses/course-select";
 import { Button } from "@/components/ui/button";
 import { X, Loader2 } from "lucide-react";
 
@@ -36,6 +37,8 @@ export function EnquiryModal({
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<EnquiryFormData>({
     resolver: zodResolver(enquirySchema),
@@ -47,7 +50,7 @@ export function EnquiryModal({
       enquirySource: enquirySourceList[0],
       enquiryDate: new Date().toISOString().split("T")[0],
       enquiryMessage: "",
-      assignedCounsellor: leadCounselorList[0],
+      assignedCounsellor: "",
       status: "New",
       nextFollowUpDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
         .toISOString()
@@ -78,7 +81,7 @@ export function EnquiryModal({
         enquirySource: enquirySourceList[0],
         enquiryDate: new Date().toISOString().split("T")[0],
         enquiryMessage: "",
-        assignedCounsellor: leadCounselorList[0],
+        assignedCounsellor: "",
         status: "New",
         nextFollowUpDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
           .toISOString()
@@ -208,16 +211,12 @@ export function EnquiryModal({
               <label className="block text-xs font-semibold text-[#11232B] mb-1">
                 Interested Course <span className="text-red-500">*</span>
               </label>
-              <select
-                {...register("interestedCourse")}
-                className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white cursor-pointer"
-              >
-                {leadCourseList.map((course) => (
-                  <option key={course} value={course}>
-                    {course}
-                  </option>
-                ))}
-              </select>
+              <CourseSelect
+                value={watch("interestedCourse")}
+                onChange={(val) => setValue("interestedCourse", val, { shouldValidate: true })}
+                placeholder="Select or search course..."
+                error={errors.interestedCourse?.message}
+              />
               {errors.interestedCourse && (
                 <p className="mt-1 text-[11px] text-red-500">{errors.interestedCourse.message}</p>
               )}
@@ -261,18 +260,14 @@ export function EnquiryModal({
             {/* Assigned Counsellor */}
             <div>
               <label className="block text-xs font-semibold text-[#11232B] mb-1">
-                Assigned Counsellor <span className="text-red-500">*</span>
+                Assigned Staff <span className="text-red-500">*</span>
               </label>
-              <select
+              <input
+                type="text"
+                placeholder="e.g. Mithun K"
                 {...register("assignedCounsellor")}
-                className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white cursor-pointer"
-              >
-                {leadCounselorList.map((staff) => (
-                  <option key={staff} value={staff}>
-                    {staff}
-                  </option>
-                ))}
-              </select>
+                className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] placeholder-[#8A9EA5] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white"
+              />
               {errors.assignedCounsellor && (
                 <p className="mt-1 text-[11px] text-red-500">{errors.assignedCounsellor.message}</p>
               )}

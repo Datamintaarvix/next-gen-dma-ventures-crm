@@ -11,6 +11,7 @@ import {
   leadSourceList,
   leadStatusEnum,
 } from "@/lib/validations/lead";
+import { CourseSelect } from "@/components/courses/course-select";
 import { Button } from "@/components/ui/button";
 import { X, Loader2 } from "lucide-react";
 
@@ -36,6 +37,8 @@ export function LeadModal({
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
@@ -202,16 +205,12 @@ export function LeadModal({
               <label className="block text-xs font-semibold text-[#11232B] mb-1">
                 Interested Course <span className="text-red-500">*</span>
               </label>
-              <select
-                {...register("interestedCourse")}
-                className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white cursor-pointer"
-              >
-                {leadCourseList.map((course) => (
-                  <option key={course} value={course}>
-                    {course}
-                  </option>
-                ))}
-              </select>
+              <CourseSelect
+                value={watch("interestedCourse")}
+                onChange={(val) => setValue("interestedCourse", val, { shouldValidate: true })}
+                placeholder="Select or search course..."
+                error={errors.interestedCourse?.message}
+              />
               {errors.interestedCourse && (
                 <p className="mt-1 text-[11px] text-red-500">{errors.interestedCourse.message}</p>
               )}

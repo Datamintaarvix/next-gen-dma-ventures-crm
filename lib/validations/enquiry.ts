@@ -67,7 +67,7 @@ export const enquirySchema = z.object({
   enquiryMessage: z
     .string()
     .min(3, { message: "Enquiry message must be at least 3 characters" }),
-  assignedCounsellor: z.string().min(1, { message: "Please select an assigned counsellor" }),
+  assignedCounsellor: z.string().min(1, { message: "Please enter assigned staff name" }),
   status: enquiryStatusEnum,
   nextFollowUpDate: z.string().min(1, { message: "Please select next follow-up date" }),
 });

@@ -363,19 +363,13 @@ export function PaymentModal({
                 <label className="text-[11px] font-semibold text-[#11232B]">
                   Received By (Staff) <span className="text-red-500">*</span>
                 </label>
-                <select
+                <input
+                  type="text"
+                  placeholder="e.g. Mithun K"
                   value={formData.receivedBy}
                   onChange={(e) => setFormData((p) => ({ ...p, receivedBy: e.target.value }))}
-                  className="w-full text-xs mt-1 bg-[#F8FBFA] border border-[#E2ECEB] rounded-lg px-3 py-2 text-[#11232B] focus:outline-none focus:border-[#078783]"
-                >
-                  {leadCounselorList.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                  <option value="Admin">Admin</option>
-                  <option value="Accounts Desk">Accounts Desk</option>
-                </select>
+                  className="w-full text-xs mt-1 bg-[#F8FBFA] border border-[#E2ECEB] rounded-lg px-3 py-2 text-[#11232B] placeholder-[#8A9EA5] focus:outline-none focus:border-[#078783]"
+                />
               </div>
 
               {/* Installment Number */}

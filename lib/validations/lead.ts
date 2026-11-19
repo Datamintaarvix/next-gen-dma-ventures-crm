@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ALL_COURSES } from "@/lib/courses";
 
 // Phone validation regex supporting international and standard formats
 const phoneRegex = /^(\+?[1-9]{1,4}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?[\d\s.-]{7,14}$/;
@@ -12,15 +13,7 @@ export const leadStatusEnum = z.enum([
   "Lost",
 ]);
 
-export const leadCourseList = [
-  "Digital Marketing",
-  "Data Analytics",
-  "UI/UX Design",
-  "Full-stack Development",
-  "AI & Machine Learning",
-  "Cybersecurity",
-  "Cloud Computing",
-] as const;
+export const leadCourseList = ALL_COURSES;
 
 export const leadSourceList = [
   "Website",

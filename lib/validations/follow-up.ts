@@ -46,7 +46,7 @@ export const followUpSchema = z.object({
   followUpDate: z.string().min(1, { message: "Please select a follow-up date" }),
   followUpTime: z.string().min(1, { message: "Please select a follow-up time" }),
   type: followUpTypeEnum,
-  assignedCounsellor: z.string().min(1, { message: "Please select an assigned counsellor" }),
+  assignedCounsellor: z.string().min(1, { message: "Please enter assigned staff name" }),
   priority: followUpPriorityEnum.default("Medium"),
   status: followUpStatusEnum.default("Pending"),
   notes: z.string().optional(),

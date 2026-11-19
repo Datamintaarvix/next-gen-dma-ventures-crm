@@ -7,6 +7,11 @@ import {
   AttendanceStatus,
   attendanceStatusEnum,
 } from "@/lib/validations/attendance";
+import {
+  COURSE_CATEGORIES,
+  COURSE_CATALOGUE_BY_CATEGORY,
+  ALL_COURSES,
+} from "@/lib/courses";
 import { AttendanceKPIs } from "@/components/attendance/attendance-kpis";
 import { MarkAttendanceModal } from "@/components/attendance/mark-attendance-modal";
 import { StudentAttendanceModal } from "@/components/attendance/student-attendance-modal";
@@ -53,7 +58,7 @@ export default function AttendancePage() {
     lowAttendanceCount: 0,
   });
 
-  const [courses, setCourses] = useState<string[]>([]);
+  const [courses, setCourses] = useState<string[]>([...ALL_COURSES]);
   const [batches, setBatches] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
 
@@ -375,11 +380,15 @@ export default function AttendancePage() {
                 onChange={(e) => setSelectedCourse(e.target.value)}
                 className="h-8.5 px-3 rounded-lg border border-[#E2ECEB] bg-slate-50 hover:bg-white text-slate-700 font-medium focus:ring-2 focus:ring-[#078783]/30 focus:outline-none"
               >
-                <option value="All">All Courses</option>
-                {courses.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                <option value="All">All Courses ({ALL_COURSES.length})</option>
+                {COURSE_CATEGORIES.map((cat) => (
+                  <optgroup key={cat} label={`── ${cat} (${COURSE_CATALOGUE_BY_CATEGORY[cat].length}) ──`}>
+                    {COURSE_CATALOGUE_BY_CATEGORY[cat].map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
 

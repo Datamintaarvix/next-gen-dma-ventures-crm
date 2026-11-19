@@ -12,6 +12,8 @@ import { StudentRecord } from "@/lib/validations/student";
 import { CourseRecord } from "@/lib/validations/course";
 import { BatchRecord } from "@/lib/validations/batch";
 import { leadCounselorList } from "@/lib/validations/lead";
+import { CourseSelect } from "@/components/courses/course-select";
+import { getCourseCode } from "@/lib/courses";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -157,7 +159,7 @@ export function AdmissionModal({
         batchCode: batches[0]?.batchCode || "DM-2026-M1",
         batchName: batches[0]?.batchName || "DM Morning Elite",
         admissionDate: todayStr,
-        counsellor: leadCounselorList[0] || "Priya Nair",
+        counsellor: "",
         totalFee: courses[0]?.fees || 45000,
         discountAmount: 0,
         discountReason: "",
@@ -175,8 +177,9 @@ export function AdmissionModal({
 
   // Handle Course Change
   const handleCourseChange = (selectedCourseName: string) => {
-    const selected = courses.find((c) => c.courseName === selectedCourseName);
-    const newTotalFee = selected?.fees ?? formData.totalFee;
+    const selected = courses.find((c) => c.courseName.toLowerCase() === selectedCourseName.toLowerCase());
+    const courseCode = selected?.courseCode || getCourseCode(selectedCourseName);
+    const newTotalFee = selected?.fees ?? (formData.totalFee || 45000);
     const newFinalFee = Math.max(0, newTotalFee - (formData.discountAmount || 0));
 
     // Find available batches for this course
@@ -188,7 +191,7 @@ export function AdmissionModal({
     setFormData((prev) => ({
       ...prev,
       courseName: selectedCourseName,
-      courseCode: selected?.courseCode || "CRS-GEN",
+      courseCode: courseCode,
       totalFee: newTotalFee,
       finalFee: newFinalFee,
       batchCode: firstBatch ? firstBatch.batchCode : prev.batchCode,
@@ -485,20 +488,14 @@ export function AdmissionModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {/* Course */}
               <div>
-                <label className="text-[11px] font-semibold text-[#11232B]">
+                <label className="text-[11px] font-semibold text-[#11232B] mb-1 block">
                   Academic Course <span className="text-red-500">*</span>
                 </label>
-                <select
+                <CourseSelect
                   value={formData.courseName}
-                  onChange={(e) => handleCourseChange(e.target.value)}
-                  className="w-full text-xs mt-1 bg-[#F8FBFA] border border-[#E2ECEB] rounded-lg px-3 py-2 text-[#11232B] focus:outline-none focus:border-[#078783]"
-                >
-                  {courses.map((c) => (
-                    <option key={c.id} value={c.courseName}>
-                      {c.courseName} ({c.courseCode}) · ₹{c.fees?.toLocaleString("en-IN")}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => handleCourseChange(val)}
+                  placeholder="Select or search course..."
+                />
               </div>
 
               {/* Batch */}
@@ -547,19 +544,15 @@ export function AdmissionModal({
               {/* Counsellor */}
               <div>
                 <label className="text-[11px] font-semibold text-[#11232B]">
-                  Assigned Counsellor <span className="text-red-500">*</span>
+                  Assigned Staff <span className="text-red-500">*</span>
                 </label>
-                <select
+                <input
+                  type="text"
+                  placeholder="e.g. Mithun K"
                   value={formData.counsellor}
                   onChange={(e) => setFormData((p) => ({ ...p, counsellor: e.target.value }))}
-                  className="w-full text-xs mt-1 bg-[#F8FBFA] border border-[#E2ECEB] rounded-lg px-3 py-2 text-[#11232B] focus:outline-none focus:border-[#078783]"
-                >
-                  {leadCounselorList.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
+                  className="w-full text-xs mt-1 bg-[#F8FBFA] border border-[#E2ECEB] rounded-lg px-3 py-2 text-[#11232B] placeholder-[#8A9EA5] focus:outline-none focus:border-[#078783]"
+                />
               </div>
             </div>
           </div>

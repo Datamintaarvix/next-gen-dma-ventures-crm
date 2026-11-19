@@ -384,18 +384,14 @@ export function FollowUpModal({
             {/* Assigned Counsellor */}
             <div>
               <label className="block text-xs font-semibold text-[#11232B] mb-1">
-                Assigned Counsellor <span className="text-red-500">*</span>
+                Assigned Staff <span className="text-red-500">*</span>
               </label>
-              <select
+              <input
+                type="text"
+                placeholder="e.g. Mithun K"
                 {...register("assignedCounsellor")}
-                className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white cursor-pointer"
-              >
-                {leadCounselorList.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+                className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] placeholder-[#8A9EA5] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white"
+              />
               {errors.assignedCounsellor && (
                 <p className="mt-1 text-[11px] text-red-500">{errors.assignedCounsellor.message}</p>
               )}
