@@ -1,0 +1,52 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Testing
+/coverage
+
+# Next.js build output
+/.next/
+/out/
+
+# Production
+/build
+
+# Environment variables & secrets (CRITICAL: NEVER COMMIT)
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS metadata
+.DS_Store
+*.pem
+Thumbs.db
+
+# Private database backups (CRITICAL: NEVER COMMIT)
+data/backups/
+
+# Diagnostic scripts and scratch files
+scratch/
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
+
+# Private operational CRM data
+/data/*.json
+
+# Legacy scripts containing hardcoded test passwords
+/scripts/setup_initial_auth_users.js
+/scripts/test_auth_and_rbac.js
+/scripts/verify_super_admin_auth.js
+
+
