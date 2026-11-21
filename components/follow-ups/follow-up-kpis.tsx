@@ -20,8 +20,8 @@ export function FollowUpKPIs({
   activeFilter = "All",
   onFilterSelect,
 }: FollowUpKPIsProps) {
-  // Use today's date formatted as YYYY-MM-DD (2026-11-17 in demo)
-  const todayStr = "2026-11-17";
+  // Live current date formatted as YYYY-MM-DD
+  const todayStr = new Date().toISOString().split("T")[0];
 
   const todayCount = followUps.filter(
     (f) => f.followUpDate === todayStr && f.status !== "Completed" && f.status !== "Cancelled"

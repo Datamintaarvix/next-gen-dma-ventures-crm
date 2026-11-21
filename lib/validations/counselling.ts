@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { leadCounselorList } from "./lead";
 
 export const sessionTypeEnum = ["In-person", "Phone", "Video Call"] as const;
 export type SessionType = (typeof sessionTypeEnum)[number];

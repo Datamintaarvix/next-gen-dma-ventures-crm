@@ -295,7 +295,7 @@ export function LeadModal({
             </label>
             <textarea
               rows={3}
-              placeholder="e.g. Background, career goals, demo workshop attended, payment preferences..."
+              placeholder="e.g. Background, career goals, workshop attended, payment preferences..."
               {...register("notes")}
               className="w-full px-3 py-2 bg-[#F3F8F7] border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] placeholder-[#8A9EA5] focus:outline-none focus:ring-1 focus:ring-[#078783] focus:bg-white resize-none"
             />

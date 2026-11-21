@@ -10,7 +10,7 @@ import {
   enquirySourceList,
   enquiryStatusEnum,
 } from "@/lib/validations/enquiry";
-import { leadCourseList, leadCounselorList } from "@/lib/validations/lead";
+import { leadCourseList } from "@/lib/validations/lead";
 import { CourseSelect } from "@/components/courses/course-select";
 import { Button } from "@/components/ui/button";
 import { X, Loader2 } from "lucide-react";

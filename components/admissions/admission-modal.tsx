@@ -11,7 +11,6 @@ import {
 import { StudentRecord } from "@/lib/validations/student";
 import { CourseRecord } from "@/lib/validations/course";
 import { BatchRecord } from "@/lib/validations/batch";
-import { leadCounselorList } from "@/lib/validations/lead";
 import { CourseSelect } from "@/components/courses/course-select";
 import { getCourseCode } from "@/lib/courses";
 import { Button } from "@/components/ui/button";
@@ -81,7 +80,7 @@ export function AdmissionModal({
     batchCode: "DM-2026-M1",
     batchName: "DM Morning Elite",
     admissionDate: todayStr,
-    counsellor: "Priya Nair",
+    counsellor: "",
     totalFee: 45000,
     discountAmount: 0,
     discountReason: "",

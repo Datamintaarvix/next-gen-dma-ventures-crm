@@ -12,7 +12,6 @@ import {
   ParticipantType,
   CounsellingSessionRecord,
 } from "@/lib/validations/counselling";
-import { leadCounselorList } from "@/lib/validations/lead";
 import { CourseSelect } from "@/components/courses/course-select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -69,9 +68,11 @@ export function ScheduleCounsellingModal({
   const [email, setEmail] = useState<string>("");
   const [interestedCourse, setInterestedCourse] = useState<string>("");
   const [assignedCounsellor, setAssignedCounsellor] = useState<string>(
-    initialCounsellor || leadCounselorList[0]
+    initialCounsellor || ""
   );
-  const [counsellingDate, setCounsellingDate] = useState<string>(initialDate || "2026-11-18");
+  const [counsellingDate, setCounsellingDate] = useState<string>(
+    initialDate || new Date().toISOString().split("T")[0]
+  );
   const [startTime, setStartTime] = useState<string>("10:00 AM");
   const [endTime, setEndTime] = useState<string>("10:45 AM");
   const [sessionType, setSessionType] = useState<SessionType>("In-person");
@@ -135,7 +136,7 @@ export function ScheduleCounsellingModal({
     setInterestedCourse(item.course || item.interestedCourse || (courses.length > 0 ? courses[0] : ""));
 
     const counsellor = item.assignedCounselor || item.assignedCounsellor || item.counsellor;
-    if (counsellor && leadCounselorList.includes(counsellor as any)) {
+    if (counsellor) {
       setAssignedCounsellor(counsellor);
     }
 

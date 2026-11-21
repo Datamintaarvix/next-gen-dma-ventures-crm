@@ -19,7 +19,6 @@ import { BatchModal } from "@/components/batches/batch-modal";
 import { BatchDetailsModal } from "@/components/batches/batch-details-modal";
 import { AssignStudentModal } from "@/components/batches/assign-student-modal";
 import { DeleteBatchDialog } from "@/components/batches/delete-batch-dialog";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import {
   Search,
   Plus,
@@ -286,7 +285,7 @@ export default function BatchesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="text-[11px] font-semibold tracking-wider text-[#078783] uppercase mb-1">
-            Next Gen / Demo Workspace
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[#11232B]">
             Batch Management
@@ -310,9 +309,6 @@ export default function BatchesPage() {
           </Button>
         </div>
       </div>
-
-      {/* Demo Notice */}
-      <DemoNotice message="Batch management workspace. Real-time correlation with Course Management and Student Directory. Seat capacity and enrollments persist in CRM data storage." />
 
       {/* Dashboard KPI Statistics */}
       <BatchKPIs

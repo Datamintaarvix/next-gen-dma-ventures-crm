@@ -16,7 +16,7 @@ export function ReminderBanner({
   onSelectFollowUp,
 }: ReminderBannerProps) {
   const [showArchInfo, setShowArchInfo] = useState(false);
-  const todayStr = "2026-11-17";
+  const todayStr = new Date().toISOString().split("T")[0];
 
   // Filter based on counsellor if selected
   const activeFollowUps = selectedCounsellor && selectedCounsellor !== "All"

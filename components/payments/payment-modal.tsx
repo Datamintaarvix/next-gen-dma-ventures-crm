@@ -9,7 +9,6 @@ import {
 } from "@/lib/validations/payment";
 import { AdmissionRecord } from "@/lib/validations/admission";
 import { StudentRecord } from "@/lib/validations/student";
-import { leadCounselorList } from "@/lib/validations/lead";
 import { Button } from "@/components/ui/button";
 import {
   X,
@@ -61,7 +60,7 @@ export function PaymentModal({
     paymentDate: todayStr,
     paymentMethod: "UPI",
     transactionRef: "",
-    receivedBy: "Priya Nair",
+    receivedBy: "",
     installmentNumber: "",
     notes: "Tuition installment payment",
   });

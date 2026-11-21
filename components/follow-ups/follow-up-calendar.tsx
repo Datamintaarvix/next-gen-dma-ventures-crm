@@ -27,10 +27,8 @@ export function FollowUpCalendar({
   onSelectFollowUp,
 }: FollowUpCalendarProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("weekly");
-  // Reference date (2026-11-17)
-  const [currentDate, setCurrentDate] = useState(new Date("2026-11-17T00:00:00"));
-
-  const todayStr = "2026-11-17";
+  const [currentDate, setCurrentDate] = useState(() => new Date());
+  const todayStr = new Date().toISOString().split("T")[0];
 
   const getStatusStyle = (f: FollowUpRecord) => {
     if (f.status === "Completed") {
@@ -76,7 +74,7 @@ export function FollowUpCalendar({
   };
 
   const handleToday = () => {
-    setCurrentDate(new Date("2026-11-17T00:00:00"));
+    setCurrentDate(new Date());
   };
 
   // Helper for formatting YYYY-MM-DD

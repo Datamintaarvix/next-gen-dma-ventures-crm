@@ -5,7 +5,6 @@ import { LeadRecord } from "@/lib/validations/lead";
 import { COURSE_CATEGORIES, COURSE_CATALOGUE_BY_CATEGORY } from "@/lib/courses";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import { LeadModal } from "@/components/leads/lead-modal";
 import { LeadViewModal } from "@/components/leads/lead-view-modal";
 import { DeleteConfirmDialog } from "@/components/leads/delete-confirm-dialog";
@@ -189,13 +188,13 @@ export default function LeadsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <div className="text-[11px] font-bold tracking-widest text-[#078783] uppercase">
-            NEXT GEN / DEMO WORKSPACE
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#11232B] tracking-tight">
             Leads Management
           </h1>
           <p className="text-xs sm:text-sm text-[#5A7178]">
-            Find, review, and update sample leads
+            Find, review, and manage your leads
           </p>
         </div>
 
@@ -221,9 +220,6 @@ export default function LeadsPage() {
           </Button>
         </div>
       </div>
-
-      {/* Notice Banner */}
-      <DemoNotice message="These leads are persisted in the CRM backend. Edits, additions, and deletions are saved to storage." />
 
       {/* Main Table Card */}
       <div className="bg-white rounded-xl border border-[#E2ECEB] shadow-sm overflow-hidden">
@@ -528,7 +524,7 @@ export default function LeadsPage() {
         {/* Pagination Footer */}
         <div className="p-4 border-t border-[#E2ECEB] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#5A7178] bg-[#FAFCFB]">
           <div>
-            <span className="font-medium text-[#11232B]">{totalItems}</span> demo leads · Page{" "}
+            <span className="font-medium text-[#11232B]">{totalItems}</span> leads · Page{" "}
             <span className="font-medium text-[#11232B]">{currentPage}</span> of{" "}
             <span className="font-medium text-[#11232B]">{totalPages}</span>
           </div>

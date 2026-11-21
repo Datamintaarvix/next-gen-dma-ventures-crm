@@ -13,7 +13,6 @@ import { CourseKPIs } from "@/components/courses/course-kpis";
 import { CourseModal } from "@/components/courses/course-modal";
 import { CourseDetailsModal } from "@/components/courses/course-details-modal";
 import { DeleteCourseDialog } from "@/components/courses/delete-course-dialog";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import {
   Search,
   Plus,
@@ -211,7 +210,7 @@ export default function CoursesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="text-[11px] font-semibold tracking-wider text-[#078783] uppercase mb-1">
-            Next Gen / Demo Workspace
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[#11232B]">
             Course Management
@@ -235,9 +234,6 @@ export default function CoursesPage() {
           </Button>
         </div>
       </div>
-
-      {/* Demo Notice */}
-      <DemoNotice message="Sample course management workspace. Course records, enrolled student metrics, and syllabus specifications persist in the CRM store." />
 
       {/* Dashboard KPI Statistics */}
       <CourseKPIs
@@ -401,7 +397,7 @@ export default function CoursesPage() {
                 {/* Card Top: Badge Index & Status */}
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-[11px] font-mono font-semibold text-[#078783] tracking-wide">
-                    {course.courseCode} / DEMO
+                    {course.courseCode}
                   </span>
                   <Badge
                     variant={

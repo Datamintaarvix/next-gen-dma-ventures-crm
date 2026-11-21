@@ -11,7 +11,6 @@ import {
   followUpPriorityEnum,
   followUpRelatedTypeEnum,
 } from "@/lib/validations/follow-up";
-import { leadCounselorList } from "@/lib/validations/lead";
 import { Button } from "@/components/ui/button";
 import { X, Loader2, Link2 } from "lucide-react";
 
@@ -67,7 +66,7 @@ export function FollowUpModal({
       followUpDate: new Date().toISOString().split("T")[0],
       followUpTime: "11:00",
       type: "Phone Call",
-      assignedCounsellor: defaultCounsellor || leadCounselorList[0],
+      assignedCounsellor: defaultCounsellor || "",
       priority: "Medium",
       status: "Pending",
       notes: "",
@@ -84,14 +83,14 @@ export function FollowUpModal({
         .then((d) => {
           if (d.success) setLeadsList(d.data);
         })
-        .catch(() => {});
+        .catch(() => { });
 
       fetch("/api/enquiries")
         .then((res) => res.json())
         .then((d) => {
           if (d.success) setEnquiriesList(d.data);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [isOpen]);
 
@@ -121,7 +120,7 @@ export function FollowUpModal({
         followUpDate: new Date().toISOString().split("T")[0],
         followUpTime: "11:00",
         type: "Phone Call",
-        assignedCounsellor: defaultCounsellor || leadCounselorList[0],
+        assignedCounsellor: defaultCounsellor || "",
         priority: "Medium",
         status: "Pending",
         notes: "",

@@ -7,10 +7,8 @@ import {
   followUpStatusEnum,
   followUpPriorityEnum,
 } from "@/lib/validations/follow-up";
-import { leadCounselorList } from "@/lib/validations/lead";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import { FollowUpKPIs } from "@/components/follow-ups/follow-up-kpis";
 import { ReminderBanner } from "@/components/follow-ups/reminder-banner";
 import { FollowUpCalendar } from "@/components/follow-ups/follow-up-calendar";
@@ -100,6 +98,11 @@ export default function FollowUpsPage() {
     setIsRefreshing(true);
     fetchFollowUps(false);
   };
+
+  const availableStaff = useMemo(
+    () => Array.from(new Set(followUps.map((f) => f.assignedCounsellor).filter(Boolean))),
+    [followUps]
+  );
 
   // Status badge variant
   const getStatusBadgeVariant = (status: FollowUpRecord["status"]) => {
@@ -266,7 +269,7 @@ export default function FollowUpsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <div className="text-[11px] font-bold tracking-widest text-[#078783] uppercase">
-            NEXT GEN / DEMO WORKSPACE
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#11232B] tracking-tight">
             Follow-up Management
@@ -324,9 +327,6 @@ export default function FollowUpsPage() {
           </Button>
         </div>
       </div>
-
-      {/* Demo Notice */}
-      <DemoNotice message="Follow-up tasks are stored persistently and link directly to student records in Leads and Enquiries Management." />
 
       {/* Reminder Alerts Banner */}
       <ReminderBanner
@@ -424,7 +424,7 @@ export default function FollowUpsPage() {
                   className="appearance-none bg-white border border-[#E2ECEB] text-xs font-medium text-[#11232B] rounded-lg px-3 py-2 pr-8 focus:outline-none focus:ring-1 focus:ring-[#078783] cursor-pointer"
                 >
                   <option value="All">All staff</option>
-                  {leadCounselorList.map((c) => (
+                  {availableStaff.map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>

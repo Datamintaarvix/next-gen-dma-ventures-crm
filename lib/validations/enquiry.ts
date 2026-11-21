@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { leadCourseList, leadCounselorList } from "./lead";
+import { leadCourseList } from "./lead";
 
 const phoneRegex = /^(\+?[1-9]{1,4}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?[\d\s.-]{7,14}$/;
 

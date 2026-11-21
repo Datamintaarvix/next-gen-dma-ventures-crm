@@ -291,8 +291,8 @@ export function CompanyProfileTab({ initialCompany, onSave }: CompanyProfileTabP
                   )}
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded p-2 text-center text-[10px] text-gray-400 font-mono">
-                  [Sample Fee Receipt / Enrollment Certificate]
+                <div className="bg-white border border-gray-200 rounded p-2 text-center text-[10px] text-gray-500 font-mono">
+                  [Official Fee Receipt & Enrollment Certificate Preview]
                 </div>
               </div>
 

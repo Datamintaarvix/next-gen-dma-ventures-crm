@@ -15,7 +15,6 @@ import { AdmissionModal } from "@/components/admissions/admission-modal";
 import { AdmissionDetailsModal } from "@/components/admissions/admission-details-modal";
 import { RecordPaymentModal } from "@/components/admissions/record-payment-modal";
 import { DeleteAdmissionDialog } from "@/components/admissions/delete-admission-dialog";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import {
   Search,
   Plus,
@@ -349,7 +348,7 @@ export default function AdmissionsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="text-[11px] font-semibold tracking-wider text-[#078783] uppercase mb-1">
-            Next Gen / Demo Workspace
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[#11232B]">
             Admissions Management
@@ -373,9 +372,6 @@ export default function AdmissionsPage() {
           </Button>
         </div>
       </div>
-
-      {/* Demo Notice */}
-      <DemoNotice message="Admissions management workspace. Seamlessly connected with Student Directory, Academic Courses, and Batch Cohorts. All admissions and fee records persist in the CRM database." />
 
       {/* Dashboard KPI Statistics */}
       <AdmissionKPIs

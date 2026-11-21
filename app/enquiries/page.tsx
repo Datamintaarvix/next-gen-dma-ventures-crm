@@ -9,7 +9,6 @@ import {
 import { COURSE_CATEGORIES, COURSE_CATALOGUE_BY_CATEGORY } from "@/lib/courses";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import { EnquiryDashboardKPIs } from "@/components/enquiries/enquiry-dashboard-kpis";
 import { EnquiryModal } from "@/components/enquiries/enquiry-modal";
 import { EnquiryDetailModal } from "@/components/enquiries/enquiry-detail-modal";
@@ -203,7 +202,7 @@ export default function EnquiriesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <div className="text-[11px] font-bold tracking-widest text-[#078783] uppercase">
-            NEXT GEN / DEMO WORKSPACE
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#11232B] tracking-tight">
             Enquiries
@@ -235,9 +234,6 @@ export default function EnquiriesPage() {
           </Button>
         </div>
       </div>
-
-      {/* Demo Notice */}
-      <DemoNotice message="Enquiry records are stored in the backend and integrate with Leads Management. Converting an enquiry creates a connected lead." />
 
       {/* 6 Enquiry Dashboard KPIs */}
       <EnquiryDashboardKPIs

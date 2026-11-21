@@ -14,7 +14,6 @@ import { StudentKPIs } from "@/components/students/student-kpis";
 import { StudentModal } from "@/components/students/student-modal";
 import { StudentProfileModal } from "@/components/students/student-profile-modal";
 import { DeleteStudentDialog } from "@/components/students/delete-student-dialog";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import {
   Search,
   Plus,
@@ -295,7 +294,7 @@ export default function StudentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="text-[11px] font-semibold tracking-wider text-[#078783] uppercase mb-1">
-            Next Gen / Demo Workspace
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[#11232B]">
             Student Management
@@ -334,9 +333,6 @@ export default function StudentsPage() {
           </Button>
         </div>
       </div>
-
-      {/* Demo Notice */}
-      <DemoNotice message="Student records persist locally in the CRM database. Edits, enrollments, and status updates persist across sessions." />
 
       {/* KPI Cards */}
       <StudentKPIs

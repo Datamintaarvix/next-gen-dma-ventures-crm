@@ -19,7 +19,6 @@ import { PaymentModal } from "@/components/payments/payment-modal";
 import { PaymentReceiptModal } from "@/components/payments/payment-receipt-modal";
 import { InstallmentDrawer } from "@/components/payments/installment-drawer";
 import { RefundModal } from "@/components/payments/refund-modal";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import {
   Search,
   Plus,
@@ -281,7 +280,7 @@ export default function PaymentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="text-[11px] font-semibold tracking-wider text-[#078783] uppercase mb-1">
-            Next Gen / Demo Workspace
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[#11232B]">
             Payment Management
@@ -305,9 +304,6 @@ export default function PaymentsPage() {
           </Button>
         </div>
       </div>
-
-      {/* Demo Notice */}
-      <DemoNotice message="Tuition fee ledger. Permanent financial transactions with real-time balance reconciliation. Receipts are issued with official NEXT GEN DMA VENTURES authentication." />
 
       {/* Dashboard KPI Statistics */}
       <PaymentKPIs

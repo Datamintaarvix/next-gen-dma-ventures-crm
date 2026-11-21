@@ -314,7 +314,7 @@ export function UsersPermissionsTab({ onAuditAction }: UsersPermissionsTabProps)
               Super Admin Account Protection Active
             </h4>
             <p className="text-amber-700 mt-0.5">
-              The primary administrator account (STF-101 / Rajesh Khanna) cannot be deactivated, demoted, or deleted. The system enforces at least one active administrator at all times.
+              The primary administrator account (Super Admin) cannot be deactivated, demoted, or deleted. The system enforces at least one active administrator at all times.
             </p>
           </div>
         </div>

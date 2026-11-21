@@ -6,7 +6,6 @@ import {
   InteractionType,
   interactionTypeEnum,
 } from "@/lib/validations/enquiry";
-import { leadCounselorList } from "@/lib/validations/lead";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -380,18 +379,27 @@ export function EnquiryDetailModal({
                   <span className="text-[#5A7178] text-[11px] block mb-0.5">
                     Assigned Counsellor
                   </span>
-                  <select
-                    value={enquiry.assignedCounsellor}
-                    onChange={(e) => handleReassign(e.target.value)}
+                  <input
+                    type="text"
+                    defaultValue={enquiry.assignedCounsellor}
+                    onBlur={(e) => {
+                      const val = e.target.value.trim();
+                      if (val && val !== enquiry.assignedCounsellor) {
+                        handleReassign(val);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const val = (e.target as HTMLInputElement).value.trim();
+                        if (val && val !== enquiry.assignedCounsellor) {
+                          handleReassign(val);
+                        }
+                      }
+                    }}
                     disabled={isReassigning}
                     className="w-full bg-white border border-[#E2ECEB] rounded px-2 py-1 text-xs font-semibold text-[#11232B] focus:outline-none focus:ring-1 focus:ring-[#078783]"
-                  >
-                    {leadCounselorList.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="e.g. Mithun K"
+                  />
                 </div>
               </div>
             </div>
@@ -436,17 +444,13 @@ export function EnquiryDetailModal({
                   ))}
                 </select>
 
-                <select
-                  value={interactionStaff || enquiry.assignedCounsellor}
+                <input
+                  type="text"
+                  placeholder={`Staff Name (e.g. ${enquiry.assignedCounsellor || "Mithun K"})`}
+                  value={interactionStaff}
                   onChange={(e) => setInteractionStaff(e.target.value)}
-                  className="px-2.5 py-1.5 bg-white border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] focus:outline-none focus:ring-1 focus:ring-[#078783]"
-                >
-                  {leadCounselorList.map((s) => (
-                    <option key={s} value={s}>
-                      Staff: {s}
-                    </option>
-                  ))}
-                </select>
+                  className="px-2.5 py-1.5 bg-white border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] placeholder-[#8A9EA5] focus:outline-none focus:ring-1 focus:ring-[#078783]"
+                />
               </div>
 
               <textarea

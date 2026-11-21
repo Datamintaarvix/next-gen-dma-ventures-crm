@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DemoNotice } from "@/components/dashboard/demo-notice";
 import { Plus } from "lucide-react";
 
 export interface ModuleItem {
@@ -18,7 +17,6 @@ interface ModulePageProps {
   title: string;
   subtitle: string;
   actionLabel: string;
-  noticeMessage?: string;
   items: ModuleItem[];
   itemCountLabel?: string;
 }
@@ -27,9 +25,8 @@ export function ModulePage({
   title,
   subtitle,
   actionLabel,
-  noticeMessage = `Sample ${title.toLowerCase()} content for demonstration. This view is not connected to a live CRM.`,
   items,
-  itemCountLabel = "3 sample items",
+  itemCountLabel = "",
 }: ModulePageProps) {
   return (
     <div className="space-y-6">
@@ -37,7 +34,7 @@ export function ModulePage({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <div className="text-[11px] font-bold tracking-widest text-[#078783] uppercase">
-            NEXT GEN / DEMO WORKSPACE
+            NEXT GEN / LIVE WORKSPACE
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#11232B] tracking-tight">
             {title}
@@ -50,9 +47,6 @@ export function ModulePage({
           <span>{actionLabel}</span>
         </Button>
       </div>
-
-      {/* Notice Callout */}
-      <DemoNotice message={noticeMessage} />
 
       {/* Overview Section */}
       <div className="space-y-4">
