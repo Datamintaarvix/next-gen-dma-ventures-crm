@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { TopNav } from "@/components/layout/top-nav";
+import { CrmAssistantWidget } from "@/components/assistant/crm-assistant-widget";
 import { useAuth } from "@/lib/auth/auth-context";
 import { Loader2 } from "lucide-react";
 import { CrmModule } from "@/lib/validations/staff";
@@ -101,6 +102,9 @@ export function AppLayout({ children }: AppLayoutProps) {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
           {children}
         </main>
+
+        {/* AI-Powered CRM Data Assistant Widget */}
+        <CrmAssistantWidget />
       </div>
     </div>
   );

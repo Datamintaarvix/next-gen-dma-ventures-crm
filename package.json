@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/genai": "^3.6.1",
     "@hookform/resolvers": "^3.9.1",
     "@supabase/supabase-js": "^2.46.1",
     "class-variance-authority": "^0.7.0",
