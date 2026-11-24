@@ -14,6 +14,11 @@ import { readCounsellingFromDisk } from "@/lib/storage/counselling-store";
 import { readPlacementsFromDisk } from "@/lib/storage/placements-store";
 import { getAllStaff } from "@/lib/storage/staff-store";
 import { getAllNotifications } from "@/lib/storage/notifications-store";
+import {
+  COURSE_CATEGORIES,
+  COURSE_CATALOGUE_BY_CATEGORY,
+  ALL_COURSES,
+} from "@/lib/courses";
 
 /**
  * ============================================================================
@@ -408,22 +413,50 @@ async function executeGetCourses(args: Record<string, any>, ctx: ToolExecutionCo
   const perm = checkPermission(ctx, "courses");
   if (!perm.allowed) return { error: perm.error, isPermissionDenied: true };
 
-  const allCourses = await getCourses();
-  let filtered = [...allCourses];
+  // 1. Standard Academy Curriculum (from lib/courses.ts: 3 core disciplines, 44 courses)
+  let standardDisciplines = COURSE_CATEGORIES.map((discipline) => {
+    const courses = [...COURSE_CATALOGUE_BY_CATEGORY[discipline]];
+    return {
+      discipline,
+      courseCount: courses.length,
+      courses,
+    };
+  });
 
-  if (args.category && typeof args.category === "string") {
+  if (args.category && typeof args.category === "string" && args.category.trim() !== "") {
     const cat = args.category.trim().toLowerCase();
-    filtered = filtered.filter((c) => c.category && c.category.toLowerCase().includes(cat));
+    standardDisciplines = standardDisciplines.filter((d) =>
+      d.discipline.toLowerCase().includes(cat)
+    );
   }
 
-  if (args.status && typeof args.status === "string") {
-    const s = args.status.trim().toLowerCase();
-    filtered = filtered.filter((c) => c.status.toLowerCase() === s);
-  }
-
-  if (args.search && typeof args.search === "string") {
+  if (args.search && typeof args.search === "string" && args.search.trim() !== "") {
     const q = args.search.trim().toLowerCase();
-    filtered = filtered.filter(
+    standardDisciplines = standardDisciplines
+      .map((d) => ({
+        ...d,
+        courses: d.courses.filter((name) => name.toLowerCase().includes(q)),
+      }))
+      .filter((d) => d.courses.length > 0);
+  }
+
+  // 2. Actual Live Database Records (from Supabase courses table)
+  const allCourses = await getCourses();
+  let dbFiltered = [...allCourses];
+
+  if (args.category && typeof args.category === "string" && args.category.trim() !== "") {
+    const cat = args.category.trim().toLowerCase();
+    dbFiltered = dbFiltered.filter((c) => c.category && c.category.toLowerCase().includes(cat));
+  }
+
+  if (args.status && typeof args.status === "string" && args.status.trim() !== "") {
+    const s = args.status.trim().toLowerCase();
+    dbFiltered = dbFiltered.filter((c) => c.status.toLowerCase() === s);
+  }
+
+  if (args.search && typeof args.search === "string" && args.search.trim() !== "") {
+    const q = args.search.trim().toLowerCase();
+    dbFiltered = dbFiltered.filter(
       (c) =>
         (c.courseName && c.courseName.toLowerCase().includes(q)) ||
         (c.courseCode && c.courseCode.toLowerCase().includes(q))
@@ -431,17 +464,31 @@ async function executeGetCourses(args: Record<string, any>, ctx: ToolExecutionCo
   }
 
   return {
-    totalCoursesInCRM: allCourses.length,
-    matchingCount: filtered.length,
-    courses: filtered.map((c) => ({
-      courseCode: c.courseCode,
-      courseName: c.courseName,
-      category: c.category,
-      duration: c.duration,
-      durationWeeks: c.durationWeeks,
-      fees: formatINR(c.fees),
-      status: c.status,
-    })),
+    standardAcademyCurriculum: {
+      description:
+        "Official NEXT GEN DMA VENTURES master curriculum directory across 3 core disciplines (44 courses total).",
+      totalDisciplines: COURSE_CATEGORIES.length,
+      totalStandardCourses: ALL_COURSES.length,
+      disciplines: standardDisciplines,
+    },
+    liveDatabaseRecords: {
+      description: "Dynamically registered course records and cohorts in the Supabase database table.",
+      totalDatabaseRecords: allCourses.length,
+      matchingDatabaseRecords: dbFiltered.length,
+      activeDatabaseCourses: dbFiltered.map((c) => ({
+        courseCode: c.courseCode,
+        courseName: c.courseName,
+        category: c.category,
+        duration: c.duration,
+        durationWeeks: c.durationWeeks,
+        fees: formatINR(c.fees),
+        status: c.status,
+      })),
+      databaseStatusNote:
+        allCourses.length === 0
+          ? "There are currently 0 dynamic course records registered in the Supabase database table. The standard 44-course curriculum above represents the active academic programs offered by the academy for leads, enquiries, counselling, and enrollments."
+          : undefined,
+    },
   };
 }
 
@@ -1124,17 +1171,18 @@ export const crmToolDeclarations = [
   {
     name: "crm_get_courses",
     description:
-      "Retrieve academic courses and programs offered by NEXT GEN DMA VENTURES. Filter by category, status, or search name.",
+      "Retrieve academic courses, disciplines, and curriculum offered by NEXT GEN DMA VENTURES. Returns standard curriculum (3 disciplines, 44 courses) and live database records.",
     parameters: {
       type: Type.OBJECT,
       properties: {
         category: {
           type: Type.STRING,
-          description: "Category of course (e.g. Digital Marketing, AI, Design, Programming).",
+          description:
+            "Discipline or category: 'IT & Software', 'Mechanical Design & Engineering', or 'Electric Vehicle & Automotive'.",
         },
         status: {
           type: Type.STRING,
-          description: "Course status: Active, Inactive.",
+          description: "Course database status: Active, Inactive.",
         },
         search: {
           type: Type.STRING,

@@ -115,8 +115,8 @@ CRITICAL OPERATIONAL RULES:
 let cachedWorkingModel: string | null = null;
 
 const FALLBACK_CHAIN = [
-  "gemini-3.1-flash-lite",
   "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
   "gemini-3.5-flash",
   "gemini-3.8-flash",
 ];
@@ -129,19 +129,22 @@ async function callGeminiGenerate(
   modelName: string,
   contents: any[],
   systemInstruction: string,
-  tools: any[]
+  tools?: any[]
 ): Promise<{ response: any; usedModel: string }> {
   const tryModel = async (model: string): Promise<any> => {
+    const config: any = {
+      systemInstruction,
+      temperature: 0.1,
+      maxOutputTokens: 1200,
+    };
+    if (tools && tools.length > 0) {
+      config.tools = tools;
+    }
     return Promise.race([
       ai.models.generateContent({
         model,
         contents,
-        config: {
-          systemInstruction,
-          tools,
-          temperature: 0.1,
-          maxOutputTokens: 1200,
-        },
+        config,
       }),
       new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error(`Gemini request to ${model} timed out after 60s.`)), 60000)
@@ -175,6 +178,9 @@ async function callGeminiGenerate(
         msg.includes("429");
 
       if (isRecoverable) {
+        if (candidateModel === cachedWorkingModel) {
+          cachedWorkingModel = null;
+        }
         continue;
       }
       throw err;
@@ -237,6 +243,7 @@ export async function generateChatResponse(
     const toolsUsed: string[] = [];
     const maxToolTurns = 3;
     let turnCount = 0;
+    const executedToolSignatures = new Set<string>();
 
     // Execution loop: Handle model tool calls and feed responses back to Gemini
     while (turnCount < maxToolTurns) {
@@ -252,15 +259,18 @@ export async function generateChatResponse(
 
       const functionCalls = response?.functionCalls;
 
-      // If no function calls, the model produced the final text reply
+      // If no function calls, the model produced the text reply directly (e.g. conversational prompt)
       if (!functionCalls || functionCalls.length === 0) {
-        const reply = response?.text || "";
-        return {
-          success: true,
-          reply: reply.trim() || "I have reviewed the CRM records for your inquiry.",
-          model: currentModel,
-          toolsUsed,
-        };
+        const reply = response?.text?.trim() || "";
+        if (reply) {
+          return {
+            success: true,
+            reply,
+            model: currentModel,
+            toolsUsed,
+          };
+        }
+        break;
       }
 
       // Add the model's message with tool calls to conversation history
@@ -275,15 +285,26 @@ export async function generateChatResponse(
       for (const call of functionCalls) {
         const toolName = call.name;
         const toolArgs = (call.args as Record<string, any>) || {};
+        const callSig = `${toolName}:${JSON.stringify(toolArgs)}`;
+
         toolsUsed.push(toolName);
 
         let executionResult: any;
-        try {
-          executionResult = await executeCrmTool(toolName, toolArgs, authContext);
-        } catch (execError: any) {
+
+        // Prevent redundant identical calls when a tool was already run
+        if (executedToolSignatures.has(callSig)) {
           executionResult = {
-            error: `Failed to execute tool '${toolName}': ${execError?.message || "Unknown error"}`,
+            note: `Tool '${toolName}' was already executed with identical arguments. Please use the results already provided above to formulate your final answer.`,
           };
+        } else {
+          executedToolSignatures.add(callSig);
+          try {
+            executionResult = await executeCrmTool(toolName, toolArgs, authContext);
+          } catch (execError: any) {
+            executionResult = {
+              error: `Failed to execute tool '${toolName}': ${execError?.message || "Unknown error"}`,
+            };
+          }
         }
 
         toolResponseParts.push({
@@ -297,25 +318,61 @@ export async function generateChatResponse(
         });
       }
 
-      // Send the tool execution results back to the model in the next turn
+      // Send the tool execution results back to the model
       contents.push({
         role: "user",
         parts: toolResponseParts,
       });
+
+      // Break out of tool execution loop to proceed to final natural-language response synthesis.
+      // This prevents unnecessary tool loops while ensuring Gemini responds with actual data.
+      break;
     }
 
-    // If loop reached max turns, make one final call to generate natural language response
+    // Generate final natural-language response WITHOUT passing tools configuration.
+    // This strictly forces the model to synthesize a complete answer using the retrieved tool results.
+    const synthesisPrompt = options.staffInfo?.name
+      ? `Please provide a complete, direct, natural-language answer to my question based on the CRM tool data retrieved above. You are responding to ${options.staffInfo.name} (${options.staffInfo.role}).`
+      : "Please provide a complete, direct, natural-language answer to my question based on the CRM tool data retrieved above.";
+
+    contents.push({
+      role: "user",
+      parts: [{ text: synthesisPrompt }],
+    });
+
     const finalResult = await callGeminiGenerate(
       ai,
       currentModel,
       contents,
       systemInstruction,
-      tools
+      undefined // No tools passed: force natural language prose
     );
+
+    let finalReply = finalResult.response?.text?.trim();
+
+    if (!finalReply) {
+      const parts = finalResult.response?.candidates?.[0]?.content?.parts || [];
+      const textParts = parts.filter(
+        (p: any) => typeof p.text === "string" && p.text.trim().length > 0
+      );
+      if (textParts.length > 0) {
+        finalReply = textParts.map((p: any) => p.text).join("\n").trim();
+      }
+    }
+
+    if (!finalReply) {
+      return {
+        success: false,
+        error:
+          "Unable to generate a clear response from the retrieved CRM data. Please rephrase your query or try again.",
+        model: finalResult.usedModel,
+        toolsUsed,
+      };
+    }
 
     return {
       success: true,
-      reply: finalResult.response?.text || "Here is the summary of the requested CRM information.",
+      reply: finalReply,
       model: finalResult.usedModel,
       toolsUsed,
     };

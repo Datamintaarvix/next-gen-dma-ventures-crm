@@ -258,9 +258,7 @@ export function CrmAssistantWidget() {
               </p>
               <div className="pt-1.5 border-t border-[#E2ECEB]/70 flex items-center gap-1.5 text-[11px] text-[#5A7178]">
                 <Info className="w-3.5 h-3.5 text-[#078783] shrink-0" />
-                <span>
-                  <strong>Notice:</strong> Live CRM database querying tools are currently being integrated.
-                </span>
+                <span>Connected to live CRM data. Responses respect your role-based permissions.</span>
               </div>
             </div>
 
