@@ -7,6 +7,7 @@ export const enquiryStatusEnum = z.enum([
   "New",
   "Pending",
   "In Progress",
+  "Follow-up",
   "Responded",
   "Converted",
   "Closed",
@@ -32,6 +33,7 @@ export const interactionTypeEnum = z.enum([
   "WhatsApp",
   "Email",
   "Counselling",
+  "Follow-up",
   "Note",
 ]);
 
@@ -85,10 +87,24 @@ export interface EnquiryRecord extends EnquiryFormData {
   updatedAt: string;
 }
 
-export const interactionSchema = z.object({
-  type: interactionTypeEnum,
-  staffName: z.string().min(1, { message: "Staff name is required" }),
-  summary: z.string().min(2, { message: "Summary/note is required" }),
-});
+export const interactionSchema = z
+  .object({
+    type: interactionTypeEnum,
+    staffName: z.string().min(1, { message: "Staff name is required" }),
+    summary: z.string().min(2, { message: "Summary/note is required" }),
+    followUpDate: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.type === "Follow-up") {
+        return Boolean(data.followUpDate && data.followUpDate.trim().length > 0);
+      }
+      return true;
+    },
+    {
+      message: "A valid follow-up date is required when interaction type is Follow-up",
+      path: ["followUpDate"],
+    }
+  );
 
 export type InteractionFormData = z.infer<typeof interactionSchema>;

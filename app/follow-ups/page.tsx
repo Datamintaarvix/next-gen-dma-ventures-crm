@@ -17,6 +17,7 @@ import { FollowUpDetailModal } from "@/components/follow-ups/follow-up-detail-mo
 import { CompleteFollowUpModal } from "@/components/follow-ups/complete-follow-up-modal";
 import { RescheduleModal } from "@/components/follow-ups/reschedule-modal";
 import { DeleteFollowUpDialog } from "@/components/follow-ups/delete-follow-up-dialog";
+import { getIndiaTodayStr } from "@/lib/utils";
 import {
   Search,
   Plus,
@@ -68,7 +69,7 @@ export default function FollowUpsPage() {
   const [selectedForReschedule, setSelectedForReschedule] = useState<FollowUpRecord | null>(null);
   const [selectedForDelete, setSelectedForDelete] = useState<FollowUpRecord | null>(null);
 
-  const todayStr = "2026-11-17";
+  const todayStr = getIndiaTodayStr();
 
   // Fetch follow-ups from backend
   const fetchFollowUps = async (showLoading = true) => {
@@ -141,6 +142,8 @@ export default function FollowUpsPage() {
           }
         } else if (kpiFilter === "completed") {
           if (f.status !== "Completed") return false;
+        } else if (kpiFilter === "pending") {
+          if (f.status !== "Pending") return false;
         } else if (kpiFilter === "missed") {
           if (f.status !== "Missed" && !(f.followUpDate < todayStr && f.status === "Pending")) {
             return false;

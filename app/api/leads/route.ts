@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLeads, createLead } from "@/lib/storage/leads-store";
 import { leadSchema } from "@/lib/validations/lead";
+import { syncLeadFollowUp } from "@/lib/services/follow-up-sync";
 
 export async function GET(request: NextRequest) {
   try {
@@ -76,6 +77,8 @@ export async function POST(request: NextRequest) {
     }
 
     const created = await createLead(validation.data);
+    await syncLeadFollowUp(created);
+
     return NextResponse.json(
       {
         success: true,

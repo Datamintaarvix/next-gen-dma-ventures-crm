@@ -52,6 +52,7 @@ export function EnquiryDetailModal({
   const [interactionType, setInteractionType] = useState<InteractionType>("Phone Call");
   const [interactionSummary, setInteractionSummary] = useState("");
   const [interactionStaff, setInteractionStaff] = useState("");
+  const [interactionFollowUpDate, setInteractionFollowUpDate] = useState<string>("");
   const [isLoggingInteraction, setIsLoggingInteraction] = useState(false);
   const [interactionError, setInteractionError] = useState<string | null>(null);
 
@@ -73,6 +74,8 @@ export function EnquiryDetailModal({
         return "pending";
       case "In Progress":
         return "inprogress";
+      case "Follow-up":
+        return "followup";
       case "Responded":
         return "responded";
       case "Converted":
@@ -107,6 +110,14 @@ export function EnquiryDetailModal({
       return;
     }
 
+    if (interactionType === "Follow-up") {
+      const selectedDate = interactionFollowUpDate || enquiry.nextFollowUpDate;
+      if (!selectedDate || !selectedDate.trim()) {
+        setInteractionError("Please select a valid follow-up date");
+        return;
+      }
+    }
+
     setIsLoggingInteraction(true);
     setInteractionError(null);
 
@@ -118,6 +129,10 @@ export function EnquiryDetailModal({
           type: interactionType,
           staffName: interactionStaff || enquiry.assignedCounsellor,
           summary: interactionSummary.trim(),
+          followUpDate:
+            interactionType === "Follow-up"
+              ? interactionFollowUpDate || enquiry.nextFollowUpDate || new Date().toISOString().split("T")[0]
+              : undefined,
         }),
       });
 
@@ -128,6 +143,7 @@ export function EnquiryDetailModal({
 
       onUpdated(result.data);
       setInteractionSummary("");
+      setInteractionFollowUpDate("");
     } catch (err: any) {
       setInteractionError(err.message || "Failed to log interaction");
     } finally {
@@ -452,6 +468,21 @@ export function EnquiryDetailModal({
                   className="px-2.5 py-1.5 bg-white border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] placeholder-[#8A9EA5] focus:outline-none focus:ring-1 focus:ring-[#078783]"
                 />
               </div>
+
+              {interactionType === "Follow-up" && (
+                <div>
+                  <label className="text-[10px] font-semibold text-[#11232B] block mb-1">
+                    Next Follow-up Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={interactionFollowUpDate || enquiry.nextFollowUpDate || ""}
+                    onChange={(e) => setInteractionFollowUpDate(e.target.value)}
+                    className="w-full px-2.5 py-1.5 bg-white border border-[#E2ECEB] rounded-lg text-xs text-[#11232B] focus:outline-none focus:ring-1 focus:ring-[#078783]"
+                  />
+                </div>
+              )}
 
               <textarea
                 rows={2}

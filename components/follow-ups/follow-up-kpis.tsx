@@ -1,12 +1,14 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { FollowUpRecord } from "@/lib/validations/follow-up";
+import { getIndiaTodayStr } from "@/lib/utils";
 import {
   Calendar,
   Clock,
   AlertCircle,
   CheckCircle2,
-  AlertTriangle,
+  ListFilter,
+  Layers,
 } from "lucide-react";
 
 interface FollowUpKPIsProps {
@@ -20,8 +22,10 @@ export function FollowUpKPIs({
   activeFilter = "All",
   onFilterSelect,
 }: FollowUpKPIsProps) {
-  // Live current date formatted as YYYY-MM-DD
-  const todayStr = new Date().toISOString().split("T")[0];
+  // Respect India Standard Time (Asia/Kolkata)
+  const todayStr = getIndiaTodayStr();
+
+  const totalCount = followUps.length;
 
   const todayCount = followUps.filter(
     (f) => f.followUpDate === todayStr && f.status !== "Completed" && f.status !== "Cancelled"
@@ -37,11 +41,17 @@ export function FollowUpKPIs({
 
   const completedCount = followUps.filter((f) => f.status === "Completed").length;
 
-  const missedCount = followUps.filter(
-    (f) => f.status === "Missed" || (f.followUpDate < todayStr && f.status === "Pending")
-  ).length;
+  const pendingCount = followUps.filter((f) => f.status === "Pending").length;
 
   const kpis = [
+    {
+      label: "Total Follow-ups",
+      count: totalCount,
+      filterKey: "All",
+      icon: Layers,
+      color: "text-[#11232B]",
+      bgColor: "bg-[#F3F8F7]",
+    },
     {
       label: "Today's Follow-ups",
       count: todayCount,
@@ -75,17 +85,17 @@ export function FollowUpKPIs({
       bgColor: "bg-[#ECFDF5]",
     },
     {
-      label: "Missed Follow-ups",
-      count: missedCount,
-      filterKey: "missed",
-      icon: AlertTriangle,
+      label: "Pending Follow-ups",
+      count: pendingCount,
+      filterKey: "pending",
+      icon: ListFilter,
       color: "text-[#D97706]",
       bgColor: "bg-[#FEF3C7]",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
       {kpis.map((kpi) => {
         const Icon = kpi.icon;
         const isSelected = activeFilter === kpi.filterKey;

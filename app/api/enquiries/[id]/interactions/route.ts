@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addCommunicationInteraction } from "@/lib/storage/enquiries-store";
+import { addCommunicationInteraction, updateEnquiry } from "@/lib/storage/enquiries-store";
 import { interactionSchema } from "@/lib/validations/enquiry";
+import { syncEnquiryFollowUp } from "@/lib/services/follow-up-sync";
 
 interface Params {
   params: {
@@ -24,12 +25,29 @@ export async function POST(request: NextRequest, { params }: Params) {
       );
     }
 
-    const updated = await addCommunicationInteraction(params.id, validation.data);
+    let updated = await addCommunicationInteraction(params.id, validation.data);
     if (!updated) {
       return NextResponse.json(
         { success: false, error: "Enquiry not found" },
         { status: 404 }
       );
+    }
+
+    if (validation.data.type === "Follow-up") {
+      const updates: any = { status: "Follow-up" };
+      if (validation.data.followUpDate) {
+        updates.nextFollowUpDate = validation.data.followUpDate;
+      }
+      const refreshed = await updateEnquiry(params.id, updates);
+      if (refreshed) {
+        updated = refreshed;
+      }
+      await syncEnquiryFollowUp(updated, {
+        isFollowUpInteraction: true,
+        followUpDate: validation.data.followUpDate,
+        staffName: validation.data.staffName,
+        interactionSummary: validation.data.summary,
+      });
     }
 
     return NextResponse.json({

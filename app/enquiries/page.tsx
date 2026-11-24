@@ -91,6 +91,8 @@ export default function EnquiriesPage() {
         return "pending";
       case "In Progress":
         return "inprogress";
+      case "Follow-up":
+        return "followup";
       case "Responded":
         return "responded";
       case "Converted":

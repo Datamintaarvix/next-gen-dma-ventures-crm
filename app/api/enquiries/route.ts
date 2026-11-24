@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getEnquiries, createEnquiry } from "@/lib/storage/enquiries-store";
 import { enquirySchema } from "@/lib/validations/enquiry";
+import { syncEnquiryFollowUp } from "@/lib/services/follow-up-sync";
 
 export async function GET(request: NextRequest) {
   try {
@@ -86,6 +87,8 @@ export async function POST(request: NextRequest) {
     }
 
     const created = await createEnquiry(validation.data);
+    await syncEnquiryFollowUp(created);
+
     return NextResponse.json(
       {
         success: true,

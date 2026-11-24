@@ -155,17 +155,33 @@ export async function getFollowUpsByRelated(
 }
 
 export async function createFollowUp(input: FollowUpFormData): Promise<FollowUpRecord> {
-  const followUps = await getFollowUps();
-
   // Generate next Follow-up Code
   let nextNum = 3001;
-  followUps.forEach((f) => {
-    const match = f.followUpCode?.match(/FLW-(\d+)/);
-    if (match) {
-      const num = parseInt(match[1], 10);
-      if (num >= nextNum) nextNum = num + 1;
-    }
-  });
+
+  if (isSupabaseServerConfigured()) {
+    const { data: latest } = await supabaseAdmin
+      .from("follow_ups")
+      .select("follow_up_code")
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    (latest || []).forEach((f) => {
+      const match = f.follow_up_code?.match(/FLW-(\d+)/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num >= nextNum) nextNum = num + 1;
+      }
+    });
+  } else {
+    const followUps = await readFollowUpsFromDisk();
+    followUps.forEach((f) => {
+      const match = f.followUpCode?.match(/FLW-(\d+)/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num >= nextNum) nextNum = num + 1;
+      }
+    });
+  }
 
   let relatedCode = input.relatedCode || null;
 
@@ -360,16 +376,58 @@ export async function completeFollowUpRecord(
     completedRecord = current;
   }
 
-  // Sync to enquiry communication timeline if connected
-  if (completedRecord.relatedType === "Enquiry" && completedRecord.relatedId) {
+  // Two-way status synchronization to source record
+  if (completedRecord.relatedType === "Lead" && completedRecord.relatedId) {
     try {
-      await addCommunicationInteraction(completedRecord.relatedId, {
-        type: completedRecord.type === "Phone Call" ? "Phone Call" : completedRecord.type === "WhatsApp" ? "WhatsApp" : completedRecord.type === "Email" ? "Email" : "Note",
-        staffName: completedRecord.assignedCounsellor,
-        summary: `Follow-up completed: ${completionNotes}`,
-      });
+      const lead = await getLeadById(completedRecord.relatedId);
+      if (lead) {
+        if (scheduleNext && scheduleNext.date) {
+          await updateLead(lead.id, {
+            followUpDate: scheduleNext.date,
+            status: "Follow-up",
+            notes: lead.notes
+              ? `${lead.notes}\n[Follow-up completed: ${completionNotes}. Next scheduled: ${scheduleNext.date}]`
+              : `[Follow-up completed: ${completionNotes}. Next scheduled: ${scheduleNext.date}]`,
+          });
+        } else {
+          await updateLead(lead.id, {
+            status: lead.status === "Follow-up" ? "Contacted" : lead.status,
+            notes: lead.notes
+              ? `${lead.notes}\n[Follow-up completed: ${completionNotes}]`
+              : `[Follow-up completed: ${completionNotes}]`,
+          });
+        }
+      }
     } catch (e) {
-      console.error("Failed to sync to enquiry timeline:", e);
+      console.error("Failed to sync completed follow-up to lead:", e);
+    }
+  } else if (completedRecord.relatedType === "Enquiry" && completedRecord.relatedId) {
+    try {
+      const enquiry = await getEnquiryById(completedRecord.relatedId);
+      if (enquiry) {
+        if (scheduleNext && scheduleNext.date) {
+          await updateEnquiry(enquiry.id, {
+            nextFollowUpDate: scheduleNext.date,
+            status: "Follow-up",
+          });
+          await addCommunicationInteraction(enquiry.id, {
+            type: "Follow-up",
+            staffName: completedRecord.assignedCounsellor,
+            summary: `Follow-up completed: ${completionNotes}. Next scheduled: ${scheduleNext.date}`,
+          });
+        } else {
+          await addCommunicationInteraction(enquiry.id, {
+            type: "Follow-up",
+            staffName: completedRecord.assignedCounsellor,
+            summary: `Follow-up completed: ${completionNotes}`,
+          });
+          if (enquiry.status === "Follow-up") {
+            await updateEnquiry(enquiry.id, { status: "Responded" });
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to sync completed follow-up to enquiry:", e);
     }
   }
 
@@ -415,6 +473,8 @@ export async function rescheduleFollowUpRecord(
     : `[Rescheduled: ${reason}]`;
   current.updatedAt = now;
 
+  let finalResult: FollowUpRecord;
+
   if (isSupabaseServerConfigured()) {
     const row = followUpToRow(current);
     const { data, error } = await supabaseAdmin
@@ -438,14 +498,51 @@ export async function rescheduleFollowUpRecord(
         console.error("Failed to sync rescheduled follow-up to disk:", e)
       );
     }
-    return result;
+    finalResult = result;
+  } else {
+    const followUps = await readFollowUpsFromDisk();
+    const index = followUps.findIndex((f) => f.id === id || f.followUpCode === id);
+    if (index === -1) throw new Error("Follow-up not found");
+
+    followUps[index] = current;
+    await writeFollowUpsToDisk(followUps);
+    finalResult = current;
   }
 
-  const followUps = await readFollowUpsFromDisk();
-  const index = followUps.findIndex((f) => f.id === id || f.followUpCode === id);
-  if (index === -1) throw new Error("Follow-up not found");
+  // Two-way status synchronization to source record
+  if (finalResult.relatedType === "Lead" && finalResult.relatedId) {
+    try {
+      const lead = await getLeadById(finalResult.relatedId);
+      if (lead) {
+        await updateLead(lead.id, {
+          followUpDate: newDate,
+          status: "Follow-up",
+          notes: lead.notes
+            ? `${lead.notes}\n[Follow-up rescheduled to ${newDate} at ${newTime}: ${reason}]`
+            : `[Follow-up rescheduled to ${newDate} at ${newTime}: ${reason}]`,
+        });
+      }
+    } catch (e) {
+      console.error("Failed to sync rescheduled follow-up to lead:", e);
+    }
+  } else if (finalResult.relatedType === "Enquiry" && finalResult.relatedId) {
+    try {
+      const enquiry = await getEnquiryById(finalResult.relatedId);
+      if (enquiry) {
+        await updateEnquiry(enquiry.id, {
+          nextFollowUpDate: newDate,
+          status: "Follow-up",
+        });
+        await addCommunicationInteraction(enquiry.id, {
+          type: "Follow-up",
+          staffName: finalResult.assignedCounsellor,
+          summary: `Follow-up rescheduled to ${newDate} at ${newTime}. Reason: ${reason}`,
+        });
+      }
+    } catch (e) {
+      console.error("Failed to sync rescheduled follow-up to enquiry:", e);
+    }
+  }
 
-  followUps[index] = current;
-  await writeFollowUpsToDisk(followUps);
-  return current;
+  return finalResult;
 }

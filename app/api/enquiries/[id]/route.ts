@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getEnquiryById, updateEnquiry, deleteEnquiry } from "@/lib/storage/enquiries-store";
 import { enquirySchema } from "@/lib/validations/enquiry";
+import { syncEnquiryFollowUp } from "@/lib/services/follow-up-sync";
 
 interface Params {
   params: {
@@ -49,6 +50,8 @@ export async function PUT(request: NextRequest, { params }: Params) {
         { status: 404 }
       );
     }
+
+    await syncEnquiryFollowUp(updated);
 
     return NextResponse.json({
       success: true,

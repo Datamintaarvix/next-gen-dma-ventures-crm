@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLeadById, updateLead, deleteLead } from "@/lib/storage/leads-store";
 import { leadSchema } from "@/lib/validations/lead";
+import { syncLeadFollowUp } from "@/lib/services/follow-up-sync";
 
 interface Params {
   params: {
@@ -49,6 +50,8 @@ export async function PUT(request: NextRequest, { params }: Params) {
         { status: 404 }
       );
     }
+
+    await syncLeadFollowUp(updated);
 
     return NextResponse.json({
       success: true,

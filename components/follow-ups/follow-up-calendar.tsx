@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FollowUpRecord } from "@/lib/validations/follow-up";
 import { Button } from "@/components/ui/button";
+import { getIndiaTodayStr } from "@/lib/utils";
 import {
   ChevronLeft,
   ChevronRight,
@@ -28,7 +29,7 @@ export function FollowUpCalendar({
 }: FollowUpCalendarProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("weekly");
   const [currentDate, setCurrentDate] = useState(() => new Date());
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getIndiaTodayStr();
 
   const getStatusStyle = (f: FollowUpRecord) => {
     if (f.status === "Completed") {

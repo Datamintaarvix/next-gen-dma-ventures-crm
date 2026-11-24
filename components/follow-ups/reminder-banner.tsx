@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FollowUpRecord } from "@/lib/validations/follow-up";
+import { getIndiaTodayStr } from "@/lib/utils";
 import { Bell, AlertCircle, Info, ChevronDown, ChevronUp, Clock } from "lucide-react";
 
 interface ReminderBannerProps {
@@ -16,7 +17,7 @@ export function ReminderBanner({
   onSelectFollowUp,
 }: ReminderBannerProps) {
   const [showArchInfo, setShowArchInfo] = useState(false);
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getIndiaTodayStr();
 
   // Filter based on counsellor if selected
   const activeFollowUps = selectedCounsellor && selectedCounsellor !== "All"
